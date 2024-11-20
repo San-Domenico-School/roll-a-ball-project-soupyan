@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = 7;
+        speed = 2;
         count = 0;
         SetCountText();
         winTextObject.SetActive(false);
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private void SetCountText()
     {
         countText.text = "Count: " + count.ToString();
-        if (count >= 23)
+        if (count >= 10)
         {
             winTextObject.SetActive(true);
             
