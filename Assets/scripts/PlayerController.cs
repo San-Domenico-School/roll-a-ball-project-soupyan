@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = true;
     private Rigidbody rb;
 
+    // Custom gravity settings
+    public float customGravity = -20f; // Adjust this value to make gravity stronger or weaker
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -30,6 +33,12 @@ public class PlayerController : MonoBehaviour
         JumpBall();
     }
 
+    void FixedUpdate()
+    {
+        // Apply custom gravity in FixedUpdate
+        ApplyCustomGravity();
+    }
+
     private void MoveBall()
     {
         xDirection = Input.GetAxis("Horizontal");
@@ -40,11 +49,11 @@ public class PlayerController : MonoBehaviour
 
     private void JumpBall()
     {
+        // Check if the player is pressing the space bar and is grounded
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            Debug.Log("Jumped!");
-            isGrounded = false;
+            isGrounded = false; // Prevent multiple jumps while in the air
         }
     }
 
@@ -69,14 +78,31 @@ public class PlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        // Check if the player is touching the ground
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true; // Set grounded to true when touching the ground
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        // Keep grounded state true while staying on the ground
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
-            Debug.Log("Touched Ground");
+        }
+    }
+
+    // Custom gravity applied here to the player's Rigidbody
+    private void ApplyCustomGravity()
+    {
+        if (!isGrounded)
+        {
+            rb.AddForce(Vector3.up * customGravity, ForceMode.Acceleration);
         }
     }
 }
-
 
 
 
